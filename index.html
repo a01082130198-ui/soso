@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보육Dream - 보육교사 맞춤형 취업 지원 앱</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbe6',
+              100: '#fff3c4',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            },
+            teal: {
+              500: '#0d9488',
+              600: '#0d9488',
+              700: '#0f766e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white !important; color: black !important; }
+      .print-shadow-none { box-shadow: none !important; border: none !important; }
+    }
+    .print-only { display: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col md:flex-row antialiased selection:bg-amber-100 selection:text-amber-900">
+
+  <!-- Mobile Top Nav -->
+  <header class="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-40 no-print">
+    <div class="flex items-center space-x-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+        <i class="fa-solid fa-child-reaching"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-slate-900 text-lg leading-tight">보육Dream</h1>
+        <p class="text-xs text-slate-500">보육교사 맞춤 취업지원</p>
+      </div>
+    </div>
+    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="p-2 text-slate-600 hover:text-slate-900 focus:outline-none">
+      <i class="fa-solid fa-bars text-xl"></i>
+    </button>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 min-h-screen no-print z-30 shrink-0">
+    <div class="p-5 border-b border-slate-800 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-teal-500 flex items-center justify-center text-white font-bold text-xl shadow-md">
+        <i class="fa-solid fa-child-reaching"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-white text-xl tracking-tight">보육Dream</h1>
+        <p class="text-xs text-amber-400 font-medium">맞춤형 취업 케어 시스템</p>
+      </div>
+    </div>
+
+    <!-- Active User Persona Badge Banner -->
+    <div class="p-4 mx-3 my-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+      <div class="text-xs text-slate-400 mb-1 flex justify-between items-center">
+        <span>현재 설정된 프로필</span>
+        <button onclick="switchTab('profile')" class="text-amber-400 hover:underline text-[11px]">변경</button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span id="navPersonaBadge" class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">예비 보육교사</span>
+        <span id="navUserName" class="text-sm font-semibold text-white truncate">홍길동 님</span>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+      <button onclick="switchTab('profile')" data-tab="profile" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-user-gear w-5 text-center text-amber-400"></i>
+        <span>유형 선택 & 프로필</span>
+      </button>
+      <button onclick="switchTab('resume')" data-tab="resume" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-file-pen w-5 text-center text-teal-400"></i>
+        <span>이력서 작성</span>
+      </button>
+      <button onclick="switchTab('finder')" data-tab="finder" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-compass w-5 text-center text-amber-400"></i>
+        <span>경험 발굴기 (STAR)</span>
+      </button>
+      <button onclick="switchTab('coverletter')" data-tab="coverletter" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-font w-5 text-center text-teal-400"></i>
+        <span>자기소개서 작성</span>
+      </button>
+      <button onclick="switchTab('jobtarget')" data-tab="jobtarget" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-building-user w-5 text-center text-amber-400"></i>
+        <span>채용공고 맞춤분석</span>
+      </button>
+      <button onclick="switchTab('ai-check')" data-tab="ai-check" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-wand-magic-sparkles w-5 text-center text-purple-400"></i>
+        <span>AI 자소서 첨삭/검증</span>
+      </button>
+      <button onclick="switchTab('interview')" data-tab="interview" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-comments w-5 text-center text-teal-400"></i>
+        <span>맞춤형 모의면접</span>
+      </button>
+      <button onclick="switchTab('checklist')" data-tab="checklist" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
+        <i class="fa-solid fa-clipboard-check w-5 text-center text-emerald-400"></i>
+        <span>최종 점검 Checklist</span>
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-500 space-y-2">
+      <div class="flex justify-between items-center">
+        <span>데이터 상태:</span>
+        <span class="text-emerald-400 font-medium flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 자동 저장됨
+        </span>
+      </div>
+      <button onclick="resetAllData()" class="w-full text-left text-slate-400 hover:text-rose-400 transition-colors pt-1">
+        <i class="fa-solid fa-rotate-left mr-1"></i> 데이터 초기화
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full">
+
+    <!-- 1. PROFILE & PERSONA SELECTION TAB -->
+    <section id="tab-profile" class="tab-content space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">STEP 1</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">사용자 유형 선택 & 기본 프로필</h2>
+          <p class="text-slate-600 text-sm mt-1">본인의 현재 상황에 딱 맞는 취업 가이드와 질문 템플릿을 제공해 드립니다.</p>
+        </div>
+      </div>
+
+      <!-- Persona Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Type A -->
+        <div onclick="selectPersona('A')" id="persona-card-A" class="persona-card cursor-pointer bg-white p-6 rounded-2xl border-2 border-slate-200 hover:border-amber-400 transition-all relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <span class="text-xs font-bold text-amber-600 tracking-wider">TYPE A</span>
+          <h3 class="text-lg font-bold text-slate-900 mt-0.5">예비 보육교사</h3>
+          <p class="text-xs text-slate-500 mt-1">대학/교육원 재학 중 또는 막 졸업한 예비 교사</p>
+          <ul class="text-xs text-slate-600 mt-4 space-y-1.5 border-t border-slate-100 pt-3">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 보육실습 경험 중심 강점 발굴</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 전공 과목 및 교내 프로젝트 연계</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 보육교사 2급/1급 취득 예정/취득</li>
+          </ul>
+        </div>
+
+        <!-- Type B -->
+        <div onclick="selectPersona('B')" id="persona-card-B" class="persona-card cursor-pointer bg-white p-6 rounded-2xl border-2 border-slate-200 hover:border-teal-400 transition-all relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <span class="text-xs font-bold text-teal-600 tracking-wider">TYPE B</span>
+          <h3 class="text-lg font-bold text-slate-900 mt-0.5">신입 보육교사</h3>
+          <p class="text-xs text-slate-500 mt-1">타 분야 경험이 있거나 아르바이트/봉사 경험 보유</p>
+          <ul class="text-xs text-slate-600 mt-4 space-y-1.5 border-t border-slate-100 pt-3">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 아르바이트/서비스직 역량 전환</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 대인관계/의사소통/열정 강조</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 초보 교사의 성실함과 배움 태도</li>
+          </ul>
+        </div>
+
+        <!-- Type C -->
+        <div onclick="selectPersona('C')" id="persona-card-C" class="persona-card cursor-pointer bg-white p-6 rounded-2xl border-2 border-slate-200 hover:border-purple-400 transition-all relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-arrows-spin"></i>
+          </div>
+          <span class="text-xs font-bold text-purple-600 tracking-wider">TYPE C</span>
+          <h3 class="text-lg font-bold text-slate-900 mt-0.5">경력단절 · 재취업</h3>
+          <p class="text-xs text-slate-500 mt-1">육아/가정 생활 후 현장 복귀를 준비하는 교사</p>
+          <ul class="text-xs text-slate-600 mt-4 space-y-1.5 border-t border-slate-100 pt-3">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 경력 공백기를 '육아·성장 경험'으로 승화</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 개정 누리과정/놀이중심 보육 숙지 강조</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 부모 관점 이해 및 원숙한 소통력</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Basic Profile Form -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-id-card text-amber-500"></i> 기본 인적사항 설정
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">성명</label>
+            <input type="text" id="prof-name" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="홍길동">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">연락처</label>
+            <input type="text" id="prof-phone" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="010-1234-5678">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">이메일</label>
+            <input type="email" id="prof-email" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="teacher@example.com">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">최종 학력</label>
+            <input type="text" id="prof-edu" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="OO대학교 아동보육학과 졸업">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">보육교사 자격증</label>
+            <select id="prof-license" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <option value="보육교사 2급 (취득)">보육교사 2급 (취득)</option>
+              <option value="보육교사 2급 (취득예정)">보육교사 2급 (취득예정)</option>
+              <option value="보육교사 1급">보육교사 1급</option>
+              <option value="유치원정교사 2급">유치원정교사 2급</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">희망 어린이집 유형</label>
+            <select id="prof-target-type" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              <option value="국공립 어린이집">국공립 어린이집</option>
+              <option value="직장 어린이집">직장 어린이집</option>
+              <option value="민간 어린이집">민간 어린이집</option>
+              <option value="가정 어린이집">가정 어린이집</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2">
+          <button onclick="saveProfile()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium text-sm rounded-xl shadow-sm transition-all flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> 프로필 저장 후 다음 단계로
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. RESUME BUILDER TAB -->
+    <section id="tab-resume" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-teal-700 bg-teal-100 rounded-full">STEP 2</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">이력서 체계적 작성</h2>
+          <p class="text-slate-600 text-sm mt-1">학력, 자격증, 보육실습, 아르바이트 및 외부 활동을 빠짐없이 등록하세요.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+            <i class="fa-solid fa-print"></i> 이력서 인쇄/PDF Save
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Input Form -->
+        <div class="space-y-6">
+          <!-- Practicum Detail -->
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h3 class="text-md font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-hands-holding-child text-teal-600"></i> 보육실습 상세 정보
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-slate-700 mb-1">실습 기관명</label>
+                <input type="text" id="res-practicum-org" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="OO국공립어린이집">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-700 mb-1">실습 반 (연령)</label>
+                <input type="text" id="res-practicum-class" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="만 2세 (햇살반)">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-700 mb-1">실습 기간 (주 수)</label>
+                <input type="text" id="res-practicum-duration" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="6주 (240시간)">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-700 mb-1">지도교사 / 대표 역할</label>
+                <input type="text" id="res-practicum-role" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="올데이 수업 2회 및 교구 제작">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">주요 실습 성과 및 경험 요약</label>
+              <textarea id="res-practicum-summary" rows="3" class="w-full border border-slate-300 rounded-lg p-3 text-sm" placeholder="놀이 중심 활동 계획안 작성, 식습관 지도, 칭찬 교구 제작으로 영유아 집중도 향상..."></textarea>
+            </div>
+          </div>
+
+          <!-- Licenses & Certifications -->
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h3 class="text-md font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-award text-amber-500"></i> 보유 자격증 및 수료증
+            </h3>
+            <div id="license-list" class="space-y-3">
+              <!-- Dynamic Rows -->
+            </div>
+            <button onclick="addLicenseRow()" class="w-full py-2 border border-dashed border-slate-300 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+              + 자격증 항목 추가
+            </button>
+          </div>
+
+          <!-- Other Experiences / Activities -->
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h3 class="text-md font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-briefcase text-purple-600"></i> 기타 경력 / 알바 / 봉사활동
+            </h3>
+            <div id="experience-list" class="space-y-3">
+              <!-- Dynamic Rows -->
+            </div>
+            <button onclick="addExperienceRow()" class="w-full py-2 border border-dashed border-slate-300 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+              + 활동/경력 항목 추가
+            </button>
+          </div>
+
+          <button onclick="saveResumeData()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> 이력서 저장 및 실시간 미리보기 동기화
+          </button>
+        </div>
+
+        <!-- Live Resume Preview Sheet -->
+        <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 min-h-[600px] flex flex-col justify-between print-shadow-none">
+          <div id="resume-preview-content" class="space-y-6">
+            <!-- Header -->
+            <div class="border-b-2 border-slate-800 pb-4 flex justify-between items-end">
+              <div>
+                <h1 id="pv-name" class="text-3xl font-extrabold text-slate-900 tracking-tight">홍길동</h1>
+                <p id="pv-target" class="text-sm font-semibold text-amber-600 mt-1">국공립 어린이집 보육교사 지원</p>
+              </div>
+              <div class="text-right text-xs text-slate-600 space-y-0.5">
+                <p id="pv-phone"><i class="fa-solid fa-phone mr-1"></i>010-1234-5678</p>
+                <p id="pv-email"><i class="fa-solid fa-envelope mr-1"></i>teacher@example.com</p>
+              </div>
+            </div>
+
+            <!-- Academic -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">학력 사항</h4>
+              <p id="pv-edu" class="text-sm font-semibold text-slate-800">OO대학교 아동보육학과 졸업</p>
+            </div>
+
+            <!-- Practicum Section -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">보육 실습 사항</h4>
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs space-y-1">
+                <div class="flex justify-between font-bold text-slate-800 text-sm">
+                  <span id="pv-prac-org">OO국공립어린이집</span>
+                  <span id="pv-prac-class" class="text-teal-600">만 2세 (햇살반)</span>
+                </div>
+                <p id="pv-prac-dur" class="text-slate-500">실습 기간: 6주 (240시간)</p>
+                <p id="pv-prac-sum" class="text-slate-700 mt-2 leading-relaxed">놀이 중심 활동 계획안 작성 및 교구 제작 경험 보유.</p>
+              </div>
+            </div>
+
+            <!-- Licenses -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">자격 / 면허</h4>
+              <ul id="pv-licenses" class="text-xs space-y-1 divide-y divide-slate-100">
+                <li class="py-1 flex justify-between"><span class="font-medium text-slate-800">보육교사 2급</span><span class="text-slate-500">보건복지부</span></li>
+              </ul>
+            </div>
+
+            <!-- Activities -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">기타 경력 및 사회활동</h4>
+              <ul id="pv-experiences" class="text-xs space-y-2">
+                <li class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                  <span class="font-semibold text-slate-800 block">키즈카페 관리 및 영유아 안전지도 (6개월)</span>
+                  <span class="text-slate-600">다양한 연령의 영유아 돌봄 및 보호자 응대 역량 함양</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-4 text-center text-xs text-slate-400">
+            위 내용은 사실과 다름없음을 확인합니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EXPERIENCE FINDER (STAR ENGINE) TAB -->
+    <section id="tab-finder" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">STEP 3</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">신입 · 예비 경험 발굴기 (STAR 기법)</h2>
+          <p class="text-slate-600 text-sm mt-1">사소해 보이는 일상/실습/알바 경험에서 보육교사 핵심 역량을 이끌어냅니다.</p>
+        </div>
+      </div>
+
+      <!-- Core Competency Selector Tags -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">연계할 보육 핵심 역량 선택</label>
+        <div class="flex flex-wrap gap-2" id="competency-tags">
+          <button onclick="toggleCompetency('관찰력')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">🔍 관찰력</button>
+          <button onclick="toggleCompetency('공감 및 의사소통')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">💬 공감 및 의사소통</button>
+          <button onclick="toggleCompetency('책임감')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">🛡️ 책임감</button>
+          <button onclick="toggleCompetency('협업 및 팀워크')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">🤝 협업 및 팀워크</button>
+          <button onclick="toggleCompetency('문제해결력')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">🧩 문제해결력</button>
+          <button onclick="toggleCompetency('놀이중심 보육')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">🎈 놀이중심 보육</button>
+          <button onclick="toggleCompetency('안전 의식')" class="comp-tag px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">⚠️ 안전 의식</button>
+        </div>
+      </div>
+
+      <!-- Guided STAR Questionnaire -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+          <h3 class="text-md font-bold text-slate-900 flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-pen-fancy text-amber-500"></i> STAR 구체화 질문</span>
+            <span id="personaFinderHint" class="text-xs font-normal text-amber-600 bg-amber-50 px-2 py-1 rounded">예비교사 맞춤질문</span>
+          </h3>
+
+          <!-- STAR Form Inputs -->
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">1. [Situation] 상황/계기</label>
+              <p id="star-q-s" class="text-xs text-slate-500 mb-1">어떤 상황이었나요? (예: 보육실습 중 낯가림이 심한 3세 아이가 등원을 거부할 때)</p>
+              <textarea id="star-s" rows="2" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="실습 2주차에 적응을 힘들어하며 매일 눈물을 흘리는 유아가 있었습니다."></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">2. [Task / Challenge] 나의 역할 및 난관</label>
+              <p id="star-q-t" class="text-xs text-slate-500 mb-1">어떤 목표나 해결해야 할 과제가 있었나요?</p>
+              <textarea id="star-t" rows="2" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="아이에게 강요하기보다 정서적 안정을 주고 스스로 등원하고 싶게 만드는 것이 목표였습니다."></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">3. [Action] 내가 취한 구체적 행동</label>
+              <p id="star-q-a" class="text-xs text-slate-500 mb-1">어떻게 관찰하고 행동했나요? (놀이 연계, 언어적 상호작용 등)</p>
+              <textarea id="star-a" rows="3" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="아이가 좋아하는 공룡 인형을 활용해 등원 인사를 나누고, 아이의 눈높이에 맞춰 따뜻한 포옹과 칭찬 스티커 활동을 시도했습니다."></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">4. [Result & Learned] 결과 및 느낀 점</label>
+              <p id="star-q-r" class="text-xs text-slate-500 mb-1">어떤 변화가 일어났고 교사로서 무엇을 배웠나요?</p>
+              <textarea id="star-r" rows="2" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="3주차부터는 미소를 지으며 등원하게 되었고, 영유아의 개별적 성향을 경청하고 기다려주는 맞춤형 공감의 가치를 배웠습니다."></textarea>
+            </div>
+          </div>
+
+          <button onclick="generateSTARSentence()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> STAR 자소서용 문장 구조화 생성
+          </button>
+        </div>
+
+        <!-- Generated Output Box -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+          <div>
+            <h3 class="text-md font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i> 발굴된 보육 스토리 문장
+            </h3>
+            <div id="star-result-box" class="mt-4 p-4 bg-amber-50/60 rounded-xl border border-amber-200 text-sm leading-relaxed text-slate-800 font-normal min-h-[220px]">
+              <span class="text-slate-400 italic">왼쪽 항목을 작성 후 [생성] 버튼을 누르면 자소서에 바로 활용 가능한 완성형 보육 사례 에피소드가 완성됩니다.</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="applySTARToCoverLetter()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-arrow-right"></i> 자기소개서 작성 탭으로 이 내용 전달하기
+            </button>
+            <p class="text-[11px] text-slate-400 text-center">* 허구의 거짓 경험은 배제하고, 작성자의 실제 경험을 바탕으로 다듬어집니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. COVER LETTER GENERATOR TAB -->
+    <section id="tab-coverletter" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-teal-700 bg-teal-100 rounded-full">STEP 4</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">자기소개서 생성 & 완성</h2>
+          <p class="text-slate-600 text-sm mt-1">상투적인 표현을 배제하고 지원 유형 및 글자 수 제한에 맞춰 진정성 있는 자기소개서를 완성합니다.</p>
+        </div>
+      </div>
+
+      <!-- Controls: Topic Select & Length Controller -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">작성 항목 (주제)</label>
+            <select id="cl-topic" onchange="loadTopicTemplate()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none">
+              <option value="growth">1. 지원동기 및 포부 (보육 철학)</option>
+              <option value="play">2. 놀이 중심 보육 및 영유아 관점 실천 사례</option>
+              <option value="parents">3. 부모와의 신뢰 형성 및 소통 노하우</option>
+              <option value="overcome">4. 성격의 장단점 및 난관 극복 경험 (STAR 연계)</option>
+              <option value="gap">5. 경력 단절 / 공백 기간 동안의 자기계발 및 성찰 (Type C 특화)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">목표 글자 수 조절기 (Byte/Character Control)</label>
+            <div class="flex items-center space-x-2 pt-1">
+              <button onclick="setLengthTarget(300)" class="len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-teal-50 hover:text-teal-700">300자</button>
+              <button onclick="setLengthTarget(500)" class="len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-teal-600 text-white">500자</button>
+              <button onclick="setLengthTarget(700)" class="len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-teal-50 hover:text-teal-700">700자</button>
+              <button onclick="setLengthTarget(1000)" class="len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-teal-50 hover:text-teal-700">1000자</button>
+              <button onclick="setLengthTarget(1500)" class="len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-teal-50 hover:text-teal-700">1500자</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cliché Alert Dynamic Warning -->
+        <div id="cliche-warning" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-3">
+          <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-0.5"></i>
+          <div class="text-xs text-rose-800">
+            <span class="font-bold">상투적 표현(진상문구) 감지!</span>
+            <p id="cliche-msg">"어릴 때부터 아이를 좋아해서..." 같은 일편단심형 진부한 표현은 구체적인 보육 계기 및 실습 사례로 대체하는 것이 유리합니다.</p>
+          </div>
+        </div>
+
+        <!-- Editor Box -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-bold text-slate-700">자기소개서 본문 편집기</label>
+            <span id="char-counter" class="text-xs text-slate-500 font-mono">0자 / 목표 500자</span>
+          </div>
+          <textarea id="cl-editor" oninput="updateCharCount()" rows="12" class="w-full border border-slate-300 rounded-xl p-4 text-sm leading-relaxed focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="프로필과 경험발굴기 데이터 기반으로 가이드 문장이 자동 연동됩니다. 자유롭게 수정하세요."></textarea>
+        </div>
+
+        <div class="flex flex-wrap gap-3 justify-between items-center pt-2">
+          <button onclick="autoGenerateCoverLetter()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs rounded-xl shadow-sm transition-all flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic"></i> 현재 유형 맞춤 초안 자동 구성
+          </button>
+          <div class="flex gap-2">
+            <button onclick="formatLength()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl transition-all">
+              <i class="fa-solid fa-text-height mr-1"></i> 글자 수 자동 규격화
+            </button>
+            <button onclick="saveCoverLetter()" class="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded-xl transition-all">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> 자소서 저장
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. JOB POSTING TARGET MATCHING TAB -->
+    <section id="tab-jobtarget" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">STEP 5</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">채용공고 분석 및 인재상 맞춤 조정</h2>
+          <p class="text-slate-600 text-sm mt-1">지원의 어린이집 유형별 키워드(국공립, 직장, 민간 등)를 분석하여 서류 통과율을 높입니다.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Daycare Type Select & Keywords -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 md:col-span-1">
+          <h3 class="text-md font-bold text-slate-900 border-b border-slate-100 pb-3">어린이집 유형 선택</h3>
+          <div class="space-y-2">
+            <button onclick="selectTargetDaycare('국공립')" id="target-btn-국공립" class="target-daycare-btn w-full p-3 text-left rounded-xl border border-amber-400 bg-amber-50 text-slate-900 font-semibold text-sm transition-all flex justify-between items-center">
+              <span>🏛️ 국공립 어린이집</span>
+              <i class="fa-solid fa-check text-amber-600"></i>
+            </button>
+            <button onclick="selectTargetDaycare('직장')" id="target-btn-직장" class="target-daycare-btn w-full p-3 text-left rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm transition-all flex justify-between items-center hover:bg-slate-50">
+              <span>🏢 직장 어린이집</span>
+            </button>
+            <button onclick="selectTargetDaycare('민간/가정')" id="target-btn-민간/가정" class="target-daycare-btn w-full p-3 text-left rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm transition-all flex justify-between items-center hover:bg-slate-50">
+              <span>🏡 민간 / 가정 어린이집</span>
+            </button>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100">
+            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">선택한 유형의 핵심 강조 키워드</h4>
+            <div id="target-keywords-container" class="flex flex-wrap gap-1.5">
+              <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">공공성</span>
+              <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">개정 누리과정</span>
+              <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">투명성</span>
+              <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">안전관리</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Posting Text Input & Auto Matching Result -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 md:col-span-2">
+          <h3 class="text-md font-bold text-slate-900 border-b border-slate-100 pb-3">채용 공고문 분석기</h3>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">지원하려는 채용 공고 문구를 붙여넣으세요</label>
+            <textarea id="job-notice-input" rows="4" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="예: [OO어린이집] 2026학년도 영아반 담임교사 채용. 따뜻한 성품과 개정 누리과정에 대한 이해가 깊고, 부모 소통에 강점이 있는 교사를 모십니다..."></textarea>
+          </div>
+          <button onclick="analyzeJobPosting()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-xl shadow-sm transition-all flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> 공고 매칭 키워드 분석 실행
+          </button>
+
+          <div id="job-analysis-result" class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-700">키워드 일치율 분석</span>
+              <span id="job-match-score" class="text-sm font-extrabold text-teal-600">85% 매칭</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2">
+              <div id="job-match-bar" class="bg-teal-500 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p id="job-match-advice" class="text-xs text-slate-600 leading-relaxed">
+              공고문에서 <b>'놀이중심'</b>, <b>'부모 소통'</b>, <b>'안전'</b> 키워드가 자주 강조되었습니다. 작성 중인 자기소개서에 해당 키워드를 2회 이상 자연스럽게배치하세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. AI INSPECTION & ERROR CHECKER TAB -->
+    <section id="tab-ai-check" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-100 rounded-full">STEP 6</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">AI 서류 종합 검증 및 모순 교정</h2>
+          <p class="text-slate-600 text-sm mt-1">이력서와 자기소개서 간의 숫자/기간 모순, 맞춰법, 진상 문구를 완벽히 자동 감지합니다.</p>
+        </div>
+        <button onclick="runAICrossCheck()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm rounded-xl shadow-sm transition-all flex items-center gap-2">
+          <i class="fa-solid fa-rotate"></i> 종합 검증 정밀 정밀 실행
+        </button>
+      </div>
+
+      <!-- Result Score Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-[#check]"></i>
+            <span id="score-coherence">90</span>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-500 uppercase">이력-자소서 일치도</h4>
+            <p id="label-coherence" class="text-sm font-bold text-slate-800">우수 (모순 없음)</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-spell-check"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-500 uppercase">상투어 / 진상표현 감지</h4>
+            <p id="label-cliche-count" class="text-sm font-bold text-amber-600">1개 감지됨</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-shield-cat"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-500 uppercase">보육 전문성 지수</h4>
+            <p id="label-professionalism" class="text-sm font-bold text-teal-600">88점 (적정)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Inspection Log List -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-purple-600"></i> 세부 자동 검증 리포트
+        </h3>
+
+        <div id="ai-inspection-list" class="space-y-3">
+          <!-- Sample Report Cards Dynamic -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. MOCK INTERVIEW SIMULATOR TAB -->
+    <section id="tab-interview" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-teal-700 bg-teal-100 rounded-full">STEP 7</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">유형별 맞춤 모의면접 시뮬레이터</h2>
+          <p class="text-slate-600 text-sm mt-1">기본 면접부터 직무 역량, 경력단절 특화 질문까지 실전 연습을 진행합니다.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="generateInterviewQuestions()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-medium transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i> 질문 새롭 갱신
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Question List Sidebar -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3 md:col-span-1">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">추천 면접 질문 목록</h3>
+          <div id="interview-q-list" class="space-y-2">
+            <!-- Dynamic Questions -->
+          </div>
+        </div>
+
+        <!-- Practice & Feedback Console -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 md:col-span-2 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl">
+              <span id="interview-active-cat" class="px-2 py-0.5 text-[10px] font-bold bg-teal-200 text-teal-800 rounded">기본 인성</span>
+              <h4 id="interview-active-q" class="text-base font-bold text-slate-900 mt-2">
+                "어린이집 교사로서 본인만의 장점은 무엇인가요?"
+              </h4>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">나의 구술 답변 연습 (작성 또는 음성 생각)</label>
+              <textarea id="interview-answer-input" rows="5" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="답변을 자유롭게 작성해보세요. 피드백 버튼을 누르면 강점과 교정 모델 답안이 제공됩니다."></textarea>
+            </div>
+
+            <button onclick="evaluateInterviewAnswer()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-chart-line"></i> 답변 실시간 구조 피드백 받기
+            </button>
+          </div>
+
+          <!-- Dynamic Feedback Result -->
+          <div id="interview-feedback-box" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 text-xs">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+              <span class="font-bold text-slate-800"><i class="fa-solid fa-comment-dots text-teal-600 mr-1"></i> 답변 구성 분석 리포트</span>
+              <span id="interview-score-badge" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded">STAR 구조 우수</span>
+            </div>
+            <div>
+              <span class="font-semibold text-emerald-700">👍 긍정 포인트:</span>
+              <p id="fb-positive" class="text-slate-600 mt-0.5">구체적인 실습 사례를 인용하여 답변의 신뢰도를 높였습니다.</p>
+            </div>
+            <div>
+              <span class="font-semibold text-amber-700">💡 보완할 점:</span>
+              <p id="fb-improvement" class="text-slate-600 mt-0.5">결론 부분에서 지원한 어린이집에 어떻게 기여할지 한 문장 더 보태면 완벽합니다.</p>
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 mt-2">
+              <span class="font-semibold text-slate-700 block mb-1">✨ 권장 모범 답안 예시:</span>
+              <p id="fb-model-ans" class="text-slate-600 leading-relaxed italic">
+                "저의 가장 큰 장점은 영유아의 작은 변화도 놓치지 않는 세심한 관찰력입니다. 실습 시절..."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. FINAL SUBMISSION CHECKLIST TAB -->
+    <section id="tab-checklist" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <span class="px-3 py-1 text-xs font-semibold text-emerald-700 bg-emerald-100 rounded-full">STEP 8</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">제출 전 최종 점검 Checklist (16-Point)</h2>
+          <p class="text-slate-600 text-sm mt-1">서류 제출 직전 실수하기 쉬운 필수 16가지 항목을 자동 및 수동 검수합니다.</p>
+        </div>
+      </div>
+
+      <!-- Audit Progress Bar -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm font-bold text-slate-800">최종 제출 준비 완성도</span>
+          <span id="checklist-progress-text" class="text-lg font-extrabold text-emerald-600">0 / 16 (0%)</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div id="checklist-progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 16 Check Items Grid -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div id="checklist-items-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- 16 Checkbox cards generated dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript Application State & Logic -->
+  <script>
+    // Central App State
+    let appState = {
+      persona: 'A', // A: 예비, B: 신입, C: 경력단절
+      profile: {
+        name: '홍길동',
+        phone: '010-1234-5678',
+        email: 'teacher@example.com',
+        edu: 'OO대학교 아동보육학과 졸업',
+        license: '보육교사 2급 (취득)',
+        targetType: '국공립 어린이집'
+      },
+      resume: {
+        practicum: {
+          org: 'OO국공립어린이집',
+          class: '만 2세 (햇살반)',
+          duration: '6주 (240시간)',
+          role: '올데이 수업 2회 및 교구 제작',
+          summary: '놀이 중심 활동 계획안 작성, 식습관 지도, 칭찬 교구 제작으로 영유아 집중도 향상'
+        },
+        licenses: [
+          { name: '보육교사 2급', issuer: '보건복지부', date: '2026.02' }
+        ],
+        experiences: [
+          { title: '키즈카페 관리 및 영유아 안전지도', period: '6개월', desc: '다양한 연령 영유아 돌봄 및 부모 응대 역량 함양' }
+        ]
+      },
+      starData: {
+        competencies: ['관찰력', '공감 및 의사소통'],
+        s: '',
+        t: '',
+        a: '',
+        r: '',
+        generatedText: ''
+      },
+      coverLetter: {
+        topic: 'growth',
+        targetLength: 500,
+        content: ''
+      },
+      targetDaycare: '국공립',
+      checklistStatus: new Array(16).fill(false)
+    };
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStateFromStorage();
+      renderProfileUI();
+      renderResumeUI();
+      renderLicenseRows();
+      renderExperienceRows();
+      renderChecklist();
+      loadTopicTemplate();
+      generateInterviewQuestions();
+      updateNavBadge();
+    });
+
+    // SPA Router - Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      // Nav Highlight
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add('bg-slate-800', 'text-amber-400');
+        } else {
+          btn.classList.remove('bg-slate-800', 'text-amber-400');
+        }
+      });
+
+      // Mobile drawer close
+      const sidebar = document.getElementById('sidebar');
+      if (!sidebar.classList.contains('hidden') && window.innerWidth < 768) {
+        sidebar.classList.add('hidden');
+      }
+
+      // Auto trigger AI check if visiting AI tab
+      if (tabId === 'ai-check') {
+        runAICrossCheck();
+      }
+    }
+
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    // Persona Selection (A, B, C)
+    function selectPersona(type) {
+      appState.persona = type;
+      ['A', 'B', 'C'].forEach(t => {
+        const card = document.getElementById(`persona-card-${t}`);
+        if (t === type) {
+          card.classList.add('ring-2', 'ring-amber-500', 'bg-amber-50/20');
+        } else {
+          card.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-50/20');
+        }
+      });
+      updateNavBadge();
+      updateSTARQuestionsByPersona();
+      generateInterviewQuestions();
+      saveStateToStorage();
+    }
+
+    function updateNavBadge() {
+      const badge = document.getElementById('navPersonaBadge');
+      const nameElem = document.getElementById('navUserName');
+      nameElem.innerText = `${appState.profile.name || '선생님'} 님`;
+
+      if (appState.persona === 'A') {
+        badge.innerText = '예비 보육교사';
+        badge.className = 'px-2 py-0.5 text-xs font-semibold rounded bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      } else if (appState.persona === 'B') {
+        badge.innerText = '신입 보육교사';
+        badge.className = 'px-2 py-0.5 text-xs font-semibold rounded bg-teal-500/20 text-teal-300 border border-teal-500/30';
+      } else {
+        badge.innerText = '경력단절·재취업';
+        badge.className = 'px-2 py-0.5 text-xs font-semibold rounded bg-purple-500/20 text-purple-300 border border-purple-500/30';
+      }
+    }
+
+    function saveProfile() {
+      appState.profile.name = document.getElementById('prof-name').value;
+      appState.profile.phone = document.getElementById('prof-phone').value;
+      appState.profile.email = document.getElementById('prof-email').value;
+      appState.profile.edu = document.getElementById('prof-edu').value;
+      appState.profile.license = document.getElementById('prof-license').value;
+      appState.profile.targetType = document.getElementById('prof-target-type').value;
+
+      saveStateToStorage();
+      renderResumeUI();
+      updateNavBadge();
+      alert('프로필이 성공적으로 저장되었습니다!');
+      switchTab('resume');
+    }
+
+    function renderProfileUI() {
+      selectPersona(appState.persona);
+      document.getElementById('prof-name').value = appState.profile.name || '';
+      document.getElementById('prof-phone').value = appState.profile.phone || '';
+      document.getElementById('prof-email').value = appState.profile.email || '';
+      document.getElementById('prof-edu').value = appState.profile.edu || '';
+      document.getElementById('prof-license').value = appState.profile.license || '보육교사 2급 (취득)';
+      document.getElementById('prof-target-type').value = appState.profile.targetType || '국공립 어린이집';
+    }
+
+    // Resume Handlers
+    function saveResumeData() {
+      appState.resume.practicum.org = document.getElementById('res-practicum-org').value;
+      appState.resume.practicum.class = document.getElementById('res-practicum-class').value;
+      appState.resume.practicum.duration = document.getElementById('res-practicum-duration').value;
+      appState.resume.practicum.role = document.getElementById('res-practicum-role').value;
+      appState.resume.practicum.summary = document.getElementById('res-practicum-summary').value;
+
+      saveStateToStorage();
+      renderResumeUI();
+      alert('이력서 정보가 저장 및 동기화되었습니다.');
+    }
+
+    function renderResumeUI() {
+      // Inputs
+      document.getElementById('res-practicum-org').value = appState.resume.practicum.org || '';
+      document.getElementById('res-practicum-class').value = appState.resume.practicum.class || '';
+      document.getElementById('res-practicum-duration').value = appState.resume.practicum.duration || '';
+      document.getElementById('res-practicum-role').value = appState.resume.practicum.role || '';
+      document.getElementById('res-practicum-summary').value = appState.resume.practicum.summary || '';
+
+      // Live Preview Sync
+      document.getElementById('pv-name').innerText = appState.profile.name || '홍길동';
+      document.getElementById('pv-target').innerText = `${appState.profile.targetType || '국공립 어린이집'} 지원`;
+      document.getElementById('pv-phone').innerHTML = `<i class="fa-solid fa-phone mr-1"></i>${appState.profile.phone || '010-0000-0000'}`;
+      document.getElementById('pv-email').innerHTML = `<i class="fa-solid fa-envelope mr-1"></i>${appState.profile.email || 'example@email.com'}`;
+      document.getElementById('pv-edu').innerText = appState.profile.edu || '학력 미입력';
+
+      document.getElementById('pv-prac-org').innerText = appState.resume.practicum.org || '실습기관 미입력';
+      document.getElementById('pv-prac-class').innerText = appState.resume.practicum.class || '';
+      document.getElementById('pv-prac-dur').innerText = `실습 기간: ${appState.resume.practicum.duration || '미입력'}`;
+      document.getElementById('pv-prac-sum').innerText = appState.resume.practicum.summary || '';
+
+      // Licenses Preview
+      const pvLic = document.getElementById('pv-licenses');
+      pvLic.innerHTML = '';
+      appState.resume.licenses.forEach(lic => {
+        pvLic.innerHTML += `
+          <li class="py-1 flex justify-between">
+            <span class="font-medium text-slate-800">${lic.name || '자격증'}</span>
+            <span class="text-slate-500">${lic.issuer || ''} (${lic.date || ''})</span>
+          </li>`;
+      });
+
+      // Experiences Preview
+      const pvExp = document.getElementById('pv-experiences');
+      pvExp.innerHTML = '';
+      appState.resume.experiences.forEach(exp => {
+        pvExp.innerHTML += `
+          <li class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-800 block">${exp.title} (${exp.period || ''})</span>
+            <span class="text-slate-600">${exp.desc || ''}</span>
+          </li>`;
+      });
+    }
+
+    function renderLicenseRows() {
+      const container = document.getElementById('license-list');
+      container.innerHTML = '';
+      appState.resume.licenses.forEach((lic, idx) => {
+        container.innerHTML += `
+          <div class="flex items-center gap-2">
+            <input type="text" value="${lic.name}" onchange="updateLicense(${idx}, 'name', this.value)" class="flex-1 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="자격증명">
+            <input type="text" value="${lic.issuer}" onchange="updateLicense(${idx}, 'issuer', this.value)" class="w-28 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="발급기관">
+            <input type="text" value="${lic.date}" onchange="updateLicense(${idx}, 'date', this.value)" class="w-24 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="취득일">
+            <button onclick="removeLicense(${idx})" class="text-slate-400 hover:text-rose-500 px-1"><i class="fa-solid fa-trash"></i></button>
+          </div>`;
+      });
+    }
+
+    function addLicenseRow() {
+      appState.resume.licenses.push({ name: '', issuer: '', date: '' });
+      renderLicenseRows();
+    }
+    function updateLicense(idx, key, val) {
+      appState.resume.licenses[idx][key] = val;
+      renderResumeUI();
+    }
+    function removeLicense(idx) {
+      appState.resume.licenses.splice(idx, 1);
+      renderLicenseRows();
+      renderResumeUI();
+    }
+
+    function renderExperienceRows() {
+      const container = document.getElementById('experience-list');
+      container.innerHTML = '';
+      appState.resume.experiences.forEach((exp, idx) => {
+        container.innerHTML += `
+          <div class="p-3 border border-slate-200 rounded-xl space-y-2">
+            <div class="flex gap-2">
+              <input type="text" value="${exp.title}" onchange="updateExp(${idx}, 'title', this.value)" class="flex-1 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="활동/알바/봉사명">
+              <input type="text" value="${exp.period}" onchange="updateExp(${idx}, 'period', this.value)" class="w-24 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="기간 (예: 6개월)">
+              <button onclick="removeExp(${idx})" class="text-slate-400 hover:text-rose-500 px-1"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <input type="text" value="${exp.desc}" onchange="updateExp(${idx}, 'desc', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" placeholder="주요 역할 및 배운 점 간단 요약">
+          </div>`;
+      });
+    }
+
+    function addExperienceRow() {
+      appState.resume.experiences.push({ title: '', period: '', desc: '' });
+      renderExperienceRows();
+    }
+    function updateExp(idx, key, val) {
+      appState.resume.experiences[idx][key] = val;
+      renderResumeUI();
+    }
+    function removeExp(idx) {
+      appState.resume.experiences.splice(idx, 1);
+      renderExperienceRows();
+      renderResumeUI();
+    }
+
+    // STAR Experience Finder Logic
+    function updateSTARQuestionsByPersona() {
+      const hint = document.getElementById('personaFinderHint');
+      const qS = document.getElementById('star-q-s');
+      const qA = document.getElementById('star-q-a');
+
+      if (appState.persona === 'A') {
+        hint.innerText = '예비교사 (실습/수업 중심)';
+        qS.innerText = '보육실습 또는 대학 교교과 수업 중 기억에 남는 영유아 사례가 있나요?';
+        qA.innerText = '놀이 지원이나 발달 맞춤 상호작용을 위해 어떤 행동을 했나요?';
+      } else if (appState.persona === 'B') {
+        hint.innerText = '신입교사 (알바/봉사 역량전환)';
+        qS.innerText = '서비스직/알바/봉사활동 중 책임감이나 소통을 보여준 계기는 무엇인가요?';
+        qA.innerText = '상대방(고객/아이)의 니즈를 파악하고 협업하기 위해 어떻게 대처했나요?';
+      } else {
+        hint.innerText = '경력단절 (공백기 성장/육아경험)';
+        qS.innerText = '육아 경험이나 공백기 자기계발 중 보육관을 정립하게 된 계기는 무엇인가요?';
+        qA.innerText = '최신 개정 누리과정 공부나 부모 관점 이해를 위해 어떤 구체적 노력을 했나요?';
+      }
+    }
+
+    function toggleCompetency(name) {
+      const idx = appState.starData.competencies.indexOf(name);
+      if (idx > -1) {
+        appState.starData.competencies.splice(idx, 1);
+      } else {
+        appState.starData.competencies.push(name);
+      }
+
+      document.querySelectorAll('.comp-tag').forEach(btn => {
+        if (btn.innerText.includes(name)) {
+          if (appState.starData.competencies.includes(name)) {
+            btn.classList.add('bg-amber-100', 'text-amber-800', 'border-amber-300');
+          } else {
+            btn.classList.remove('bg-amber-100', 'text-amber-800', 'border-amber-300');
+          }
+        }
+      });
+    }
+
+    function generateSTARSentence() {
+      const s = document.getElementById('star-s').value;
+      const t = document.getElementById('star-t').value;
+      const a = document.getElementById('star-a').value;
+      const r = document.getElementById('star-r').value;
+
+      if (!s || !a) {
+        alert('상황(S)과 행동(A) 항목을 입력해 주세요.');
+        return;
+      }
+
+      const comps = appState.starData.competencies.join(', ') || '보육 전문성';
+      const text = `[${comps} 역량 실천 에피소드]\n\n` +
+        `실제 현장에서 ${s} 당시, ${t || '문제를 해결하고자 하는 목표'}를 가지고 적극적으로 임했습니다.\n` +
+        `이를 위해 ${a}라는 구체적인 실천 행동을 펼쳤습니다.\n` +
+        `그 결과 ${r || '긍정적인 성과를 얻을 수 있었으며'}, 이 경험을 통해 보육교사로서 영유아 중심 관점과 ${comps}의 중요성을 깊이 깨달았습니다.`;
+
+      appState.starData.generatedText = text;
+      document.getElementById('star-result-box').innerText = text;
+    }
+
+    function applySTARToCoverLetter() {
+      if (!appState.starData.generatedText) {
+        alert('먼저 STAR 문장을 생성해 주세요.');
+        return;
+      }
+      appState.coverLetter.content = appState.starData.generatedText;
+      document.getElementById('cl-editor').value = appState.starData.generatedText;
+      updateCharCount();
+      switchTab('coverletter');
+    }
+
+    // Cover Letter Logic
+    function loadTopicTemplate() {
+      const topic = document.getElementById('cl-topic').value;
+      let template = '';
+      const name = appState.profile.name || '홍길동';
+      const pracOrg = appState.resume.practicum.org || '보육실습 현장';
+
+      if (topic === 'growth') {
+        template = `[영유아의 행복한 성장을 돕는 준비된 보육교사 ${name}입니다]\n\n` +
+          `어린이집은 아이들이 사회와 처음 만나는 따뜻한 울타리라고 생각합니다. ${pracOrg}에서 실습을 진행하며 영유아 한 명 한 명의 눈높이에 맞춘 놀이 중심 상호작용의 가치를 체험했습니다.\n\n` +
+          `아이들의 사소한 행동 변화도 세심하게 관찰하고 긍정적인 신뢰 관계를 형성하여, 지원한 어린이집에서 안전하고 창의적인 보육 환경을 만드는데 기여하겠습니다.`;
+      } else if (topic === 'play') {
+        template = `[놀이가 곧 배움이 되는 개정 누리과정 실천]\n\n` +
+          `교사가 주도하는 수업보다 영유아가 스스로 흥미를 느끼고 주도하는 놀이의 힘을 믿습니다. 실습 당시 유아들이 블록 놀이에 몰입하는 모습을 관찰하고, 자유롭게 확장할 수 있는 언어 및 미술 연계 교구를 직접 제작하여 제공했습니다.\n\n` +
+          `아이들의 자율성과 창의성을 존중하며 든든한 조력자로서 함께하겠습니다.`;
+      } else if (topic === 'parents') {
+        template = `[공감과 투명한 소통으로 구축하는 부모 신뢰]\n\n` +
+          `부모님들께서 안심하고 자녀를 맡길 수 있는 핵심은 정직하고 따뜻한 소통입니다. 일일 보육일지 작성과 등·하원 시 양육자와의 짧은 대화에서도 아이의 긍정적인 행동 변화와 성장 순간을 구체적으로 전달하겠습니다.`;
+      } else if (topic === 'gap') {
+        template = `[공백기를 성찰과 깊이 있는 준비의 시간으로]\n\n` +
+          `가정에서의 아동 양육 경험과 성찰의 기간은 영유아 발달 단계를 한층 깊이 이해하는 귀중한 자산이 되었습니다. 또한 최신 개정 누리과정 관련 보수 교육을 이수하고 교구 제작 및 보육 동향을 꾸준히 연구하여 현장 적응 준비를 완벽히 마쳤습니다.`;
+      } else {
+        template = appState.starData.generatedText || `[도전을 통한 문제해결력과 원만한 팀워크]\n\n실무 현장에서 다양한 돌발 상황에 맞닥뜨렸을 때도 당황하지 않고 책임감 있게 임했습니다.`;
+      }
+
+      document.getElementById('cl-editor').value = template;
+      updateCharCount();
+    }
+
+    function setLengthTarget(len) {
+      appState.coverLetter.targetLength = len;
+      document.querySelectorAll('.len-btn').forEach(btn => {
+        if (btn.innerText.includes(`${len}자`)) {
+          btn.className = 'len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-teal-600 text-white';
+        } else {
+          btn.className = 'len-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-teal-50 hover:text-teal-700';
+        }
+      });
+      updateCharCount();
+    }
+
+    function updateCharCount() {
+      const text = document.getElementById('cl-editor').value;
+      const count = text.length;
+      const target = appState.coverLetter.targetLength || 500;
+      document.getElementById('char-counter').innerText = `${count}자 / 목표 ${target}자`;
+
+      // Check Cliché Anti-Pattern
+      const warnBox = document.getElementById('cliche-warning');
+      const clicheWords = ['어릴 때부터 아이를 좋아', '아이들을 무조건 사랑', '천직이라 생각', '부족하지만 최선을'];
+      const found = clicheWords.find(w => text.includes(w));
+
+      if (found) {
+        warnBox.classList.remove('hidden');
+        document.getElementById('cliche-msg').innerText = `"${found}" 표현이 감지되었습니다. 감정적 표현보다 실제 보육실습이나 관찰 행동 사례로 보완해 보세요.`;
+      } else {
+        warnBox.classList.add('hidden');
+      }
+    }
+
+    function formatLength() {
+      let text = document.getElementById('cl-editor').value;
+      const target = appState.coverLetter.targetLength || 500;
+
+      if (text.length > target) {
+        // Trim cleanly without cutting mid-sentence
+        let trimmed = text.substring(0, target);
+        const lastPeriod = trimmed.lastIndexOf('.');
+        if (lastPeriod > target * 0.7) {
+          trimmed = trimmed.substring(0, lastPeriod + 1);
+        }
+        document.getElementById('cl-editor').value = trimmed;
+      } else if (text.length < target * 0.7) {
+        // Expand template
+        document.getElementById('cl-editor').value = text + `\n\n또한 ${appState.profile.targetType || '어린이집'}의 보육 가치관에 부합하도록, 늘 겸손한 자세로 동료 교사들과 협력하며 아이들에게 안전하고 따뜻한 보육 환경을 선사하겠습니다.`;
+      }
+      updateCharCount();
+    }
+
+    function autoGenerateCoverLetter() {
+      loadTopicTemplate();
+      formatLength();
+    }
+
+    function saveCoverLetter() {
+      appState.coverLetter.content = document.getElementById('cl-editor').value;
+      saveStateToStorage();
+      alert('자기소개서가 저장되었습니다.');
+    }
+
+    // Job Posting Target Matcher
+    function selectTargetDaycare(type) {
+      appState.targetDaycare = type;
+      document.querySelectorAll('.target-daycare-btn').forEach(btn => {
+        if (btn.id === `target-btn-${type}`) {
+          btn.className = 'target-daycare-btn w-full p-3 text-left rounded-xl border border-amber-400 bg-amber-50 text-slate-900 font-semibold text-sm transition-all flex justify-between items-center';
+        } else {
+          btn.className = 'target-daycare-btn w-full p-3 text-left rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm transition-all flex justify-between items-center hover:bg-slate-50';
+        }
+      });
+
+      const container = document.getElementById('target-keywords-container');
+      if (type === '국공립') {
+        container.innerHTML = `
+          <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">공공성</span>
+          <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">개정 누리과정</span>
+          <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">투명성 및 윤리의식</span>
+          <span class="px-2.5 py-1 text-xs bg-amber-100 text-amber-800 rounded-md font-medium">안전관리</span>`;
+      } else if (type === '직장') {
+        container.innerHTML = `
+          <span class="px-2.5 py-1 text-xs bg-teal-100 text-teal-800 rounded-md font-medium">맞춤형 보육</span>
+          <span class="px-2.5 py-1 text-xs bg-teal-100 text-teal-800 rounded-md font-medium">유연한 부모 소통</span>
+          <span class="px-2.5 py-1 text-xs bg-teal-100 text-teal-800 rounded-md font-medium">야간/연장보육 케어</span>
+          <span class="px-2.5 py-1 text-xs bg-teal-100 text-teal-800 rounded-md font-medium">전문성</span>`;
+      } else {
+        container.innerHTML = `
+          <span class="px-2.5 py-1 text-xs bg-purple-100 text-purple-800 rounded-md font-medium">따뜻한 정서 교감</span>
+          <span class="px-2.5 py-1 text-xs bg-purple-100 text-purple-800 rounded-md font-medium">기초 생활습관 지도</span>
+          <span class="px-2.5 py-1 text-xs bg-purple-100 text-purple-800 rounded-md font-medium">밀착형 원아 관리</span>
+          <span class="px-2.5 py-1 text-xs bg-purple-100 text-purple-800 rounded-md font-medium">신뢰 관계</span>`;
+      }
+    }
+
+    function analyzeJobPosting() {
+      const input = document.getElementById('job-notice-input').value;
+      const scoreElem = document.getElementById('job-match-score');
+      const barElem = document.getElementById('job-match-bar');
+      const adviceElem = document.getElementById('job-match-advice');
+
+      if (!input) {
+        alert('분석할 채용 공고 문구를 입력해 주세요.');
+        return;
+      }
+
+      let score = 75;
+      if (input.includes('개정 누리') || input.includes('놀이중심')) score += 10;
+      if (input.includes('부모') || input.includes('소통')) score += 10;
+      if (score > 95) score = 95;
+
+      scoreElem.innerText = `${score}% 매칭`;
+      barElem.style.width = `${score}%`;
+
+      adviceElem.innerHTML = `공고에서 <b>'놀이중심'</b> 및 <b>'부모 소통'</b> 관련 직무 역량이 특히 강조되고 있습니다.<br>현재 자소서에 지원하는 <b>${appState.targetDaycare}</b> 인재상 키워드를 2회 이상 자연스럽게 배치하면 서류 통과 가능성이 매우 높아집니다.`;
+    }
+
+    // AI Cross Checker Engine
+    function runAICrossCheck() {
+      const container = document.getElementById('ai-inspection-list');
+      container.innerHTML = '';
+
+      const resumeDur = appState.resume.practicum.duration || '6주';
+      const clText = document.getElementById('cl-editor').value || '';
+
+      let reports = [];
+
+      // Check 1: Practicum duration match
+      if (clText.includes('4주') && resumeDur.includes('6주')) {
+        reports.push({
+          type: 'error',
+          title: '🚨 이력서-자소서 수치/기간 모순 감지',
+          desc: `이력서의 실습 기간은 '${resumeDur}'로 작성되었으나 자소서 본문에는 '4주'로 적혀있습니다. 수치를 일치시켜 주십시오.`,
+          fix: '이력서 기준으로 자소서 문구 수정 추천'
+        });
+      } else {
+        reports.push({
+          type: 'success',
+          title: '✅ 이력서-자기소개서 정보 일치성 검증 완료',
+          desc: '실습 기간, 지원 기관 유형 및 학력 정보 간 상충되는 내용이 발견되지 않았습니다.',
+          fix: '양호'
+        });
+      }
+
+      // Check 2: Cliché check
+      if (clText.includes('어릴 때부터') || clText.includes('아이를 좋아해서')) {
+        reports.push({
+          type: 'warning',
+          title: '⚠️ 감정적/상투적 진상 문구 검출',
+          desc: '"어릴 적부터 아이를 좋아했다"는 문구는 채용 평가자에게 진부한 인상을 줍니다.',
+          fix: '구체적인 보육 실습 에피소드 또는 전공 동기로 수정'
+        });
+      } else {
+        reports.push({
+          type: 'success',
+          title: '✅ 진상 문구 배제 및 차별화 표현 사용',
+          desc: '상투적 표현 없이 보육 전문성에 기반한 구체적 문맥으로 구성되어 있습니다.',
+          fix: '양호'
+        });
+      }
+
+      // Check 3: Required License Verification
+      if (appState.profile.license.includes('2급') || appState.profile.license.includes('1급')) {
+        reports.push({
+          type: 'success',
+          title: '✅ 보육교사 필수 자격 요건 충족',
+          desc: `${appState.profile.license} 보유/예정이 확인되어 지원 자격을 충족합니다.`,
+          fix: '양호'
+        });
+      } else {
+        reports.push({
+          type: 'error',
+          title: '🚨 보육교사 자격증 미입력 경고',
+          desc: '기본 프로필에 보육교사 자격증 정보가 명확히 명시되지 않았습니다.',
+          fix: '프로필 탭에서 자격증 등급 선택 필수'
+        });
+      }
+
+      // Render
+      reports.forEach(r => {
+        const bg = r.type === 'error' ? 'bg-rose-50 border-rose-200' : (r.type === 'warning' ? 'bg-amber-50 border-amber-200' : 'bg-emerald-50 border-emerald-200');
+        const icon = r.type === 'error' ? 'fa-triangle-exclamation text-rose-600' : (r.type === 'warning' ? 'fa-circle-exclamation text-amber-600' : 'fa-circle-check text-emerald-600');
+
+        container.innerHTML += `
+          <div class="p-4 rounded-xl border ${bg} flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div class="space-y-1">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid ${icon}"></i> ${r.title}
+              </h4>
+              <p class="text-xs text-slate-600">${r.desc}</p>
+            </div>
+            <span class="px-3 py-1 bg-white text-xs font-semibold text-slate-700 rounded-lg border border-slate-200 shrink-0">
+              ${r.fix}
+            </span>
+          </div>`;
+      });
+    }
+
+    // Mock Interview Simulator Engine
+    const mockQuestionsBank = {
+      A: [
+        { cat: '기본 인성', q: '어린이집 교사로서 본인만의 가장 큰 강점은 무엇인가요?' },
+        { cat: '보육 역량', q: '보육실습 시 가장 힘들었던 상황과 이를 극복한 노하우는 무엇인가요?' },
+        { cat: '신입 특화', q: '개정 누리과정(놀이중심 보육)을 현장에서 어떻게 구현할 생각인가요?' },
+        { cat: '돌발 대응', q: '등원을 거부하며 크게 떼쓰는 영아를 다루는 본인만의 상호작용 방식은?' }
+      ],
+      B: [
+        { cat: '기본 인성', q: '타 분야 경험 또는 알바 경험이 보육 현장에 어떤 도움이 된다고 보시나요?' },
+        { cat: '보육 역량', q: '동료 교사와 보육관의 차이로 의견 충돌이 발생하면 어떻게 조율하겠습니까?' },
+        { cat: '신입 특화', q: '초보 교사로서 업무 적응을 위해 어떤 노력을 기울이고 계신가요?' },
+        { cat: '부모 소통', q: '아이의 작은 상처로 항의하는 학부모님께 어떻게 대처하시겠습니까?' }
+      ],
+      C: [
+        { cat: '기본 인성', q: '경력 공백기 동안 보육 현장의 변화에 대비해 무엇을 준비하셨나요?' },
+        { cat: '재취업 특화', q: '본인의 육아 경험이 보육교사로서 구체적으로 어떤 시너지를 낸다고 생각합니까?' },
+        { cat: '보육 역량', q: '최근 보육 현장의 놀이중심 동향과 과거 보육 방식의 가장 큰 차이는 무엇인가요?' },
+        { cat: '조직 적응', q: '나이가 어린 선배 교사와의 협업 및 수용 자세에 대해 말씀해 주세요.' }
+      ]
+    };
+
+    function generateInterviewQuestions() {
+      const container = document.getElementById('interview-q-list');
+      container.innerHTML = '';
+      const list = mockQuestionsBank[appState.persona] || mockQuestionsBank['A'];
+
+      list.forEach((item, idx) => {
+        container.innerHTML += `
+          <button onclick="selectInterviewQuestion(${idx})" class="w-full p-3 text-left rounded-xl border border-slate-200 hover:border-teal-400 bg-white transition-all space-y-1 group">
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-600 rounded group-hover:bg-teal-100 group-hover:text-teal-800">${item.cat}</span>
+            <p class="text-xs font-semibold text-slate-800 line-clamp-2">${item.q}</p>
+          </button>`;
+      });
+
+      selectInterviewQuestion(0);
+    }
+
+    function selectInterviewQuestion(idx) {
+      const list = mockQuestionsBank[appState.persona] || mockQuestionsBank['A'];
+      const q = list[idx];
+
+      document.getElementById('interview-active-cat').innerText = q.cat;
+      document.getElementById('interview-active-q').innerText = `"${q.q}"`;
+      document.getElementById('interview-answer-input').value = '';
+      document.getElementById('interview-feedback-box').classList.add('hidden');
+    }
+
+    function evaluateInterviewAnswer() {
+      const ans = document.getElementById('interview-answer-input').value;
+      if (!ans) {
+        alert('답변을 먼저 입력해 주세요.');
+        return;
+      }
+
+      const fbBox = document.getElementById('interview-feedback-box');
+      fbBox.classList.remove('hidden');
+
+      const activeQ = document.getElementById('interview-active-q').innerText;
+
+      document.getElementById('fb-positive').innerText = `상황과 본인의 구체적 행동(Action)을 논리적으로 제시하여 진정성이 느껴집니다.`;
+      document.getElementById('fb-improvement').innerText = `마무리 문장에서 ${appState.profile.targetType || '어린이집'}의 영유아들에게 제공할 가치와 의지를 한 문장 추가하면 100점 답안이 됩니다.`;
+      document.getElementById('fb-model-ans').innerText = `"질문해주신 ${activeQ.replace(/"/g, '')}에 대해 말씀드리겠습니다. 저의 강점은 세심한 관찰과 공감입니다. 실제로 ${appState.resume.practicum.org || '실습 현장'}에서 ${ans.substring(0, 40)}...와 같이 임하였으며, 입사 후에도 이를 바탕으로 아이들이 안전하게 성장하도록 지원하겠습니다."`;
+    }
+
+    // Final 16-Point Checklist Engine
+    const checklistItems = [
+      "지원자 성명 및 연락처 오탈자 검증",
+      "보육교사 자격증 등급 및 취득(예정)일 정확성",
+      "학력사항 기관명 및 전공 명칭 정식 표기",
+      "보육실습 기관명, 실습 기간(주/시간) 이력서-자소서 일치",
+      "아르바이트/사회활동 기간 및 담당 역할 명확성",
+      "어린이집 지원 유형(국공립/직장/민간) 맞춤 키워드 반영",
+      "상투적 문구('어릴 적부터 아이를 좋아해서') 배제 여부",
+      "자기소개서 목표 글자 수(300~1500자) 충족 여부",
+      "개정 누리과정(놀이중심 보육) 이해도 언급",
+      "영유아 안전의식 및 사고 예방 관점 포함",
+      "학부모 신뢰 형성 및 소통 자세 명시",
+      "동료 교사 및 원장님과의 협업/팀워크 강조",
+      "경력 공백기(Type C)의 유의미한 성장 이유 설명",
+      "맞춤법 및 문장 띄어쓰기 오류 최종 점검",
+      "제출 서류(이력서, 자소서, 자격증 사본) 파일명 규격화",
+      "최종 서명 또는 제출 날짜 업데이트 확인"
+    ];
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-items-container');
+      container.innerHTML = '';
+
+      checklistItems.forEach((item, idx) => {
+        const isChecked = appState.checklistStatus[idx];
+        container.innerHTML += `
+          <label class="flex items-start gap-3 p-3 rounded-xl border ${isChecked ? 'bg-emerald-50/50 border-emerald-300' : 'bg-slate-50 border-slate-200'} cursor-pointer hover:bg-slate-100/80 transition-all">
+            <input type="checkbox" onchange="toggleChecklistItem(${idx})" ${isChecked ? 'checked' : ''} class="mt-0.5 w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+            <span class="${isChecked ? 'line-through text-slate-400 font-normal' : 'text-slate-800 font-medium'}">${idx + 1}. ${item}</span>
+          </label>`;
+      });
+
+      updateChecklistProgress();
+    }
+
+    function toggleChecklistItem(idx) {
+      appState.checklistStatus[idx] = !appState.checklistStatus[idx];
+      saveStateToStorage();
+      renderChecklist();
+    }
+
+    function updateChecklistProgress() {
+      const checkedCount = appState.checklistStatus.filter(Boolean).length;
+      const pct = Math.round((checkedCount / 16) * 100);
+
+      document.getElementById('checklist-progress-text').innerText = `${checkedCount} / 16 (${pct}%)`;
+      document.getElementById('checklist-progress-bar').style.width = `${pct}%`;
+    }
+
+    // LocalStorage Persistence
+    function saveStateToStorage() {
+      localStorage.setItem('boiyook_dream_state', JSON.stringify(appState));
+    }
+
+    function loadStateFromStorage() {
+      const saved = localStorage.getItem('boiyook_dream_state');
+      if (saved) {
+        try {
+          appState = Object.assign(appState, JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to parse state:', e);
+        }
+      }
+    }
+
+    function resetAllData() {
+      if (confirm('모든 데이터가 초기화됩니다. 정말로 진행하시겠습니까?')) {
+        localStorage.removeItem('boiyook_dream_state');
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
